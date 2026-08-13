@@ -16,7 +16,7 @@ import Pipeline from "../src/pages/pipeline/Pipeline";
 import Followups from "../src/pages/followups/Followups";
 import Reports from "../src/pages/reports/Reports";
 import Team from "../src/pages/users/Team";
-import Settings from "../src/pages/settting/Settings";
+import Settings from "../src/pages/settings/Settings";
 import LeadGroups from "../src/pages/leads/LeadGroups";
 import AdvancedSearch from "../src/pages/leads/AdvancedSearch";
 import TermsAndConditions from "../src/pages/legal/TermsAndConditions";

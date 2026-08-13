@@ -24,11 +24,16 @@ exports.createLead = async (req, res) => {
   }
 };
 
+// Add Note
 exports.addNote = async (req, res) => {
   try {
     const workspaceId = getWorkspaceId(req);
+    if (!workspaceId) {
+      return res.status(400).json({ message: "Workspace context is required." });
+    }
+
     const lead = await Lead.findOne({
-      where: workspaceId ? { id: req.params.id, workspaceId } : { id: req.params.id },
+      where: { id: req.params.id, workspaceId },
     });
 
     if (!lead) {
@@ -49,15 +54,37 @@ exports.addNote = async (req, res) => {
   }
 };
 
-// Get All Leads
+// Get All Leads (Bounded Pagination & Strict Tenant Isolation)
 exports.getLeads = async (req, res) => {
   try {
     const workspaceId = getWorkspaceId(req);
-    const leads = await Lead.findAll({
-      where: workspaceId ? { workspaceId } : {},
-      order: [["createdAt", "DESC"]],
-    });
+    if (!workspaceId) {
+      return res.status(400).json({ message: "Workspace context is required." });
+    }
 
+    // Support pagination parameters with safe caps
+    const page = req.query.page ? Math.max(1, parseInt(req.query.page, 10)) : null;
+    const limit = req.query.limit ? Math.min(100, Math.max(1, parseInt(req.query.limit, 10))) : null;
+
+    const queryOptions = {
+      where: { workspaceId },
+      order: [["createdAt", "DESC"]],
+    };
+
+    if (page && limit) {
+      queryOptions.limit = limit;
+      queryOptions.offset = (page - 1) * limit;
+
+      const { count, rows } = await Lead.findAndCountAll(queryOptions);
+      return res.json({
+        total: count,
+        page,
+        totalPages: Math.ceil(count / limit),
+        leads: rows,
+      });
+    }
+
+    const leads = await Lead.findAll(queryOptions);
     res.json(leads);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -68,8 +95,12 @@ exports.getLeads = async (req, res) => {
 exports.getLead = async (req, res) => {
   try {
     const workspaceId = getWorkspaceId(req);
+    if (!workspaceId) {
+      return res.status(400).json({ message: "Workspace context is required." });
+    }
+
     const lead = await Lead.findOne({
-      where: workspaceId ? { id: req.params.id, workspaceId } : { id: req.params.id },
+      where: { id: req.params.id, workspaceId },
     });
 
     if (!lead) {
@@ -88,8 +119,12 @@ exports.getLead = async (req, res) => {
 exports.updateLead = async (req, res) => {
   try {
     const workspaceId = getWorkspaceId(req);
+    if (!workspaceId) {
+      return res.status(400).json({ message: "Workspace context is required." });
+    }
+
     const lead = await Lead.findOne({
-      where: workspaceId ? { id: req.params.id, workspaceId } : { id: req.params.id },
+      where: { id: req.params.id, workspaceId },
     });
 
     if (!lead) {
@@ -110,8 +145,12 @@ exports.updateLead = async (req, res) => {
 exports.deleteLead = async (req, res) => {
   try {
     const workspaceId = getWorkspaceId(req);
+    if (!workspaceId) {
+      return res.status(400).json({ message: "Workspace context is required." });
+    }
+
     const lead = await Lead.findOne({
-      where: workspaceId ? { id: req.params.id, workspaceId } : { id: req.params.id },
+      where: { id: req.params.id, workspaceId },
     });
 
     if (!lead) {

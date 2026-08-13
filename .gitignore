@@ -17,10 +17,18 @@ build/
 *.sqlite
 *.db
 
-# Logs
+# Data Exports & Static Files
+crm-backend/exports/*.csv
+exports/*.csv
+*.csv
+
+# Logs & Temporary Files
 logs/
 *.log
 npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+tmp-*.js
 
 # Editor & OS Junk
 .vscode/*

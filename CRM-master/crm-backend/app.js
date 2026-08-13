@@ -61,6 +61,7 @@ safeMountRoute("/api/workspaces", "./routes/workspaceRoutes");
 safeMountRoute("/api/workspace", "./routes/workspaceRoutes");
 
 safeMountRoute("/api/lead-discovery", "./routes/leadDiscoveryRoutes");
+safeMountRoute("/api/audit-logs", "./routes/auditLogRoutes");
 
 app.get("/favicon.ico", (req, res) => res.status(204).end());
 
