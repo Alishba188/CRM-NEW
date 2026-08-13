@@ -263,7 +263,7 @@ async function seedDemoData() {
   console.log("✅ Demo workspace seeded with sample leads and tasks.");
 }
 
-async function start() {
+async function initDb() {
   try {
     await sequelize.authenticate();
     console.log("✅ Database connected.");
@@ -279,7 +279,13 @@ async function start() {
       err.errors.forEach((e) => console.error(`   -> ${e.message}`));
     }
   }
+}
 
+// Initialize Database connection on module load
+initDb();
+
+// Local Development Server (ignored by Vercel serverless)
+if (process.env.NODE_ENV !== "production" && !process.env.VERCEL) {
   const server = app.listen(PORT, "0.0.0.0", () => {
     console.log(`🚀 Server running on port ${PORT}`);
     console.log(`   Local:   http://localhost:${PORT}`);
@@ -295,4 +301,5 @@ async function start() {
   });
 }
 
-start();
+// Expose the Express app for Vercel Serverless Functions
+module.exports = app;
