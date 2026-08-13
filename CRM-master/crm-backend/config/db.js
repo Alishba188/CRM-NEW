@@ -17,11 +17,18 @@ const dialect = process.env.DB_DIALECT
   : "sqlite";
 
 const useSQLite = dialect === "sqlite";
-const storagePath = path.join(__dirname, "..", "data", "crm.sqlite");
+
+// Determine safe storage directory: Vercel serverless requires writing to /tmp
+const isVercel = process.env.VERCEL || process.env.NODE_ENV === "production";
+const storageDir = isVercel
+  ? path.join("/tmp", "data")
+  : path.join(__dirname, "..", "data");
+
+const storagePath = path.join(storageDir, "crm.sqlite");
 
 if (useSQLite) {
   fs.mkdirSync(path.dirname(storagePath), { recursive: true });
-  console.log(`Using SQLite - local file at: ${storagePath}`);
+  console.log(`Using SQLite - file at: ${storagePath}`);
 } else {
   console.log(`Using MySQL - ${process.env.DB_HOST}:${process.env.DB_PORT}`);
 }
