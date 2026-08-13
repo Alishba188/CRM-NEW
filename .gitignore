@@ -1,0 +1,30 @@
+# Node Modules & Dependencies
+node_modules/
+**/node_modules/
+
+# Build Outputs
+dist/
+**/dist/
+dist-ssr/
+**/dist-ssr/
+build/
+**/build/
+
+# Environment Variables & Databases
+.env
+*.env
+*.local
+*.sqlite
+*.db
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Editor & OS Junk
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+Thumbs.db
